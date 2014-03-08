@@ -1,4 +1,0 @@
-/usr/local/hadoop/mahout/bin/mahout itemsimilarity --input /user/movie_lens_data --output /user/movie_lens_rec_item_similarity --tempDir /app/hadoop/tmp/recommenditemsimilarity --similarityClassname SIMILARITY_COSINE
-
-/usr/local/hadoop/mahout/bin/mahout recommenditembased --input /user/movie_lens_data --output /user/movie_lens_rec_item_based --tempDir /app/hadoop/tmp/recommenditembased --usersFile /user/movie_lens_user/part-m-00000 --similarityClassname SIMILARITY_COSINE
-
