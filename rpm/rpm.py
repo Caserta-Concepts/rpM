@@ -1,13 +1,20 @@
 #py imports
 from collections import OrderedDict
-from flask import Flask, jsonify
+from flask import Flask, Response
+from flask import request
 import redis
+import json
 
 #project imports
 from config import Config
 
+##################################
+## APP SETUP
+##################################
+
 #declare application
 app = Flask(__name__)
+app.debug = True
 
 #config
 cfg = Config()
@@ -15,10 +22,24 @@ cfg = Config()
 #redis connection
 rP = redis.StrictRedis(host = cfg.g('redis','host'), port = cfg.g('redis','port'), db = 0)
 
+##################################
+## REDIS INTERACTION
+##################################
+def get_item_sim(itemid, numperset):
+    return rP.zrevrange(itemid, 0, numperset ,'withscores')
+    
+
+def get_item_base(userid, numperset):
+    return rP.zrevrange('U-'+userid,0,  numperset, 'withscores')
+
+##################################
+## ROUTES
+##################################
 #index
 @app.route('/')
 def index():
     return 'rpM Recommender :)'
+
 
 #recommendation getter
 @app.route('/recommender/<string:userid>/<int:itemid>/<int:numitems>')
@@ -28,8 +49,8 @@ def recommender (userid, itemid, numitems):
     numperset = numitems*2
 
     #get from redis, no pipeline, it's just two calls (for now)
-    itemsim = rP.zrevrange(itemid, 0, numperset ,'withscores')
-    itembase = rP.zrevrange('U-'+userid,0,  numperset, 'withscores')
+    itemsim = get_item_sim(itemid, numperset)
+    itembase = get_item_base(userid, numperset)
 
     #get top scores so we can level the two datasets (item base is 1 to 5, item sim 0 to 1)
 
@@ -63,9 +84,18 @@ def recommender (userid, itemid, numitems):
         print '----\norig item_sim:' + str(itemsim)
         print '----\ncombined result:' + str(dictResS)
 
-    results = jsonify(recommendations=dictResS)
-    #results = str(dictResS)
+    callback_string = request.args.get('callback')
+    if callback_string:
+        results = callback_string
+        results += "(" + json.dumps(dictResS, indent=4) + ")"
+    else:
+        results = json.dumps(dictResS, indent=4)
 
-    return results
+    resp = Response(response=results,
+                    status=200,
+                    mimetype="application/json")
+
+    return resp
+
 if __name__ == '__main__':
     app.run()
