@@ -15,7 +15,9 @@ pL     = rC.pipeline(cfg.g('redis','port'))
 
 
 #read file
-itemfile = "/Users/elliottcordo/Projects/Caserta/rpM/sample_data/movie_lens/u_item.txt" # str(sys.argv)
+print sys.argv[1]
+
+itemfile = sys.argv[1]
 items = open (itemfile)
 
 #read the lines
