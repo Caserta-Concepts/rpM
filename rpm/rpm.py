@@ -42,9 +42,10 @@ def index():
 
 
 #recommendation getter
-@app.route('/recommender/<string:userid>/<int:itemid>/<int:numitems>')
-def recommender (userid, itemid, numitems):
+@app.route('/recommender/<string:userid>/<int:itemid>/<int:numitems>',defaults={'mode': 'simple'})
+def recommender (userid, itemid, numitems,mode):
 
+    print mode
     #we will retrieve twice the requested recommendations from each set
     numperset = numitems*2
 
@@ -72,6 +73,12 @@ def recommender (userid, itemid, numitems):
             dictRes[i[0]] = dictRes[i[0]] + i[1]*factor
         else:
             dictRes[i[0]] = i[1]*factor
+
+    #find item attributes
+    if mode:  #== 'full':  #can't get optional param to work
+        for key in dictRes.keys():
+            print rP.hget('I'+key,'name')
+
 
     #then we'll sort the dict and take the top results based on numitems
     dictResS = OrderedDict(sorted(dictRes.items(), key=lambda t: t[1], reverse=True)[:numitems])
