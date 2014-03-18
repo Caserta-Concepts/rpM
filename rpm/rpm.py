@@ -22,6 +22,16 @@ cfg = Config()
 #redis connection
 rP = redis.StrictRedis(host = cfg.g('redis','host'), port = cfg.g('redis','port'), db = 0)
 
+def WrapCallbackString(result_data):
+    callback_string = request.args.get('callback')
+    if callback_string:
+        results = callback_string
+        results += "(" + json.dumps(result_data, indent=4) + ")"
+    else:
+        results = json.dumps(result_data, indent=4)
+
+    return results
+
 ##################################
 ## REDIS INTERACTION
 ##################################
@@ -39,6 +49,30 @@ def get_item_base(userid, numperset):
 @app.route('/')
 def index():
     return 'rpM Recommender :)'
+
+
+#get item details
+#sample URL:  http://localhost:5000/getItem?item_id=1,2,3,5,6,99&callback=mycallback
+#simpler URL: http://localhost:5000/getItem?item_id=1,2,3,5,6,99
+@app.route('/getItem')
+def get_item():
+    #pull the string of ids from the querystring and turn it into an array
+    itemid_string = request.args.get('item_id')
+    itemArray = itemid_string.split(',')
+
+    resultsArray = itemArray ## replace this with your code to look up the descriptions
+
+
+    ## do callback stuff to make javascript clients happy fun time
+    results = WrapCallbackString(resultsArray)
+
+    resp = Response(response=results,
+                    status=200,
+                    mimetype="application/json")
+
+    return resp
+
+    return itemArray
 
 
 #recommendation getter
@@ -91,12 +125,7 @@ def recommender (userid, itemid, numitems,mode):
         print '----\norig item_sim:' + str(itemsim)
         print '----\ncombined result:' + str(dictResS)
 
-    callback_string = request.args.get('callback')
-    if callback_string:
-        results = callback_string
-        results += "(" + json.dumps(dictResS, indent=4) + ")"
-    else:
-        results = json.dumps(dictResS, indent=4)
+    results = WrapCallbackString(dictResS)
 
     resp = Response(response=results,
                     status=200,
