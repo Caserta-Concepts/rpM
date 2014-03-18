@@ -22,6 +22,10 @@ cfg = Config()
 #redis connection
 rP = redis.StrictRedis(host = cfg.g('redis','host'), port = cfg.g('redis','port'), db = 0)
 
+
+##################################
+## helper functions
+##################################
 def WrapCallbackString(result_data):
     callback_string = request.args.get('callback')
     if callback_string:
@@ -31,6 +35,7 @@ def WrapCallbackString(result_data):
         results = json.dumps(result_data, indent=4)
 
     return results
+
 
 ##################################
 ## REDIS INTERACTION
