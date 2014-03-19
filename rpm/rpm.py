@@ -47,6 +47,16 @@ def get_item_sim(itemid, numperset):
 def get_item_base(userid, numperset):
     return rP.zrevrange('U-'+userid,0,  numperset, 'withscores')
 
+#will replace this with a lua script in future
+def get_multi_items (itemids):
+    for i in itemids:
+        items = rP.hgetall(i)
+        items['itemid']=i #put itemid back into results
+        yield items
+
+
+
+
 ##################################
 ## ROUTES
 ##################################
@@ -65,19 +75,23 @@ def get_item():
     itemid_string = request.args.get('item_id')
     itemArray = itemid_string.split(',')
 
-    resultsArray = itemArray ## replace this with your code to look up the descriptions
-
+    items = get_multi_items(itemArray) ## replace this with your code to look up the descriptions
 
     ## do callback stuff to make javascript clients happy fun time
-    results = WrapCallbackString(resultsArray)
+    #results = WrapCallbackString(resultsArray)
+    results = []
+    for i in items:
+        print i
 
-    resp = Response(response=results,
-                    status=200,
-                    mimetype="application/json")
+    return 'grumpy cat'
 
-    return resp
+    #resp = Response(response=results,
+    #                status=200,
+    #                mimetype="application/json")
 
-    return itemArray
+    #return resp
+
+    #return itemArray
 
 
 #recommendation getter
