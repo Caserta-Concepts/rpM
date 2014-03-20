@@ -48,11 +48,17 @@ def get_item_base(userid, numperset):
     return rP.zrevrange('U-'+userid,0,  numperset, 'withscores')
 
 #will replace this with a lua script in future
-def get_multi_items (itemids):
-    for i in itemids:
-        items = rP.hgetall(i)
-        items['itemid']=i #put itemid back into results
-        yield items
+def get_multi_items(itemids):
+    results = []
+    for itemid in itemids:
+        ascii_itemid = itemid.encode('ascii', 'ignore')
+        item_results = rP.hgetall(ascii_itemid)
+        item_results['itemid'] = ascii_itemid
+
+        results.append(item_results)
+
+    return results
+
 
 
 
@@ -78,18 +84,18 @@ def get_item():
     items = get_multi_items(itemArray) ## replace this with your code to look up the descriptions
 
     ## do callback stuff to make javascript clients happy fun time
-    #results = WrapCallbackString(resultsArray)
-    results = []
-    for i in items:
-        print i
+    results = WrapCallbackString(items)
+    #results = []
+    #for i in items:
+        #print i
 
-    return 'grumpy cat'
+    #return 'grumpy cat'
 
-    #resp = Response(response=results,
-    #                status=200,
-    #                mimetype="application/json")
+    resp = Response(response=results,
+                    status=200,
+                    mimetype="application/json")
 
-    #return resp
+    return resp
 
     #return itemArray
 
