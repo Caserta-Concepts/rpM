@@ -35,6 +35,10 @@ htmlcov/
 nosetests.xml
 coverage.xml
 
+#py charm and env
+.idea
+
+
 # Translations
 *.mo
 
