@@ -5,6 +5,8 @@ from flask import request
 import redis
 import json
 
+from recommendation_item import recommendation_item
+
 #project imports
 from config import Config
 
@@ -35,6 +37,7 @@ def WrapCallbackString(result_data):
         results = json.dumps(result_data, indent=4)
 
     return results
+
 
 
 ##################################
@@ -100,8 +103,60 @@ def get_item():
     #return itemArray
 
 
-#recommendation getter
-@app.route('/recommender/<string:userid>/<int:itemid>/<int:numitems>',defaults={'mode': 'simple'})
+#recommendation getters
+@app.route('/recommenderitems/<string:userid>/<int:itemid>/<int:numitems>',defaults={'mode': 'simple'})
+def recommenderitems (userid, itemid, numitems,mode):
+    retArray = []
+    #we will retrieve twice the requested recommendations from each set
+    numperset = numitems*2
+    #get from redis, no pipeline, it's just two calls (for now)
+    itemsim = get_item_sim(itemid, numperset)
+    itembase = get_item_base(userid, numperset)
+
+    #get top scores so we can level the two datasets (item base is 1 to 5, item sim 0 to 1)
+
+    if itemsim and itembase:
+        topitemsim = itemsim[0][1]
+        topitembase = itembase[0][1]
+        factor = topitembase/topitemsim
+    else:
+        factor = 1
+
+    for i in itembase:
+        item = recommendation_item();
+        item.item_id = i[0]
+        item.score = i[1]
+        retArray.append(item.__dict__)
+
+    for i in itemsim:
+        this_itemid = i[0]
+        found_item = [x for x in retArray if x['item_id'] == this_itemid]
+        if len(found_item) > 0:
+            found_item[0]['score'] = found_item[0]['score'] + i[1]*factor
+        else:
+            item = recommendation_item();
+            item.item_id = i[0]
+            item.score = i[1]
+            retArray.append(item.__dict__)
+
+    for recommendation in retArray:
+        item_id_to_search = "I" + recommendation['item_id']
+        item_details = get_multi_items([item_id_to_search])
+        recommendation['item_description'] = item_details[0]['name']
+        recommendation['imdb'] = item_details[0]['imdb']
+
+    newlist = sorted(retArray, key=lambda x: x['score'], reverse=True)[:numitems]
+
+    results = WrapCallbackString(newlist)
+
+    resp = Response(response=results,
+                    status=200,
+                    mimetype="application/json")
+
+    return resp
+
+
+@app.route('/recommender/<string:userid>/<int:itemid>/<int:numitems>',defaults={'mode': 'full'})
 def recommender (userid, itemid, numitems,mode):
 
     print mode
@@ -114,7 +169,7 @@ def recommender (userid, itemid, numitems,mode):
 
     #get top scores so we can level the two datasets (item base is 1 to 5, item sim 0 to 1)
 
-    if  itemsim and itembase:
+    if itemsim and itembase:
         topitemsim = itemsim[0][1]
         topitembase = itembase[0][1]
         factor = topitembase/topitemsim
