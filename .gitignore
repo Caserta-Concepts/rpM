@@ -35,6 +35,10 @@ htmlcov/
 nosetests.xml
 coverage.xml
 
+#py charm and env
+.idea/*
+
+
 # Translations
 *.mo
 
@@ -56,3 +60,5 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+
+.idea/workspace.xml
