@@ -36,7 +36,7 @@ nosetests.xml
 coverage.xml
 
 #py charm and env
-.idea
+.idea/*
 
 
 # Translations
@@ -57,3 +57,5 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+
+.idea/workspace.xml
