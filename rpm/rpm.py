@@ -136,7 +136,7 @@ def recommenderitems (userid, itemid, numitems,mode):
         else:
             item = recommendation_item();
             item.item_id = i[0]
-            item.score = i[1]
+            item.score = i[1] * factor
             retArray.append(item.__dict__)
 
     for recommendation in retArray:

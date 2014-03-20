@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="48cbda3d-0b21-4c11-a838-fee18533a644" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rpm/rpm.py" afterPath="$PROJECT_DIR$/rpm/rpm.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -30,7 +29,7 @@
       <file leaf-file-name="rpm.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/rpm/rpm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="145" column="28" selection-start="4022" selection-end="4022" vertical-scroll-proportion="0.978355" vertical-offset="1497" max-vertical-offset="3345">
+            <state line="138" column="38" selection-start="3733" selection-end="3733" vertical-scroll-proportion="0.48051947" vertical-offset="1737" max-vertical-offset="3345">
               <folding>
                 <element signature="e#12#47#0" expanded="true" />
               </folding>
@@ -50,7 +49,7 @@
       <file leaf-file-name=".gitignore" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="53" column="6" selection-start="539" selection-end="539" vertical-scroll-proportion="0.0" vertical-offset="195" max-vertical-offset="960">
+            <state line="60" column="6" selection-start="598" selection-end="598" vertical-scroll-proportion="0.0" vertical-offset="300" max-vertical-offset="1050">
               <folding />
             </state>
           </provider>
@@ -363,7 +362,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="6" selection-start="539" selection-end="539" vertical-scroll-proportion="0.0" vertical-offset="195" max-vertical-offset="960">
+        <state line="60" column="6" selection-start="598" selection-end="598" vertical-scroll-proportion="0.0" vertical-offset="300" max-vertical-offset="1050">
           <folding />
         </state>
       </provider>
@@ -377,7 +376,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/rpm/rpm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="145" column="28" selection-start="4022" selection-end="4022" vertical-scroll-proportion="0.978355" vertical-offset="1497" max-vertical-offset="3345">
+        <state line="138" column="38" selection-start="3733" selection-end="3733" vertical-scroll-proportion="0.48051947" vertical-offset="1737" max-vertical-offset="3345">
           <folding>
             <element signature="e#12#47#0" expanded="true" />
           </folding>
