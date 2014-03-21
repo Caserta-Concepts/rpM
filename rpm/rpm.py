@@ -104,6 +104,7 @@ def get_items():
 #recommendation getters
 @app.route('/recommenderitems/<string:userid>/<int:itemid>/<int:numitems>/<string:mode>')
 @app.route('/recommenderitems/<string:userid>/<int:itemid>/<int:numitems>',defaults={'mode': 'simple'})
+#http://127.0.0.1:5000/recommenderitems/572/7/50/detail or http://127.0.0.1:5000/recommenderitems/572/7/50
 
 def recommenderitems (userid, itemid, numitems,mode):
 
