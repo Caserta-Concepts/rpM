@@ -5,10 +5,9 @@ from flask import request
 import redis
 import json
 
-from recommendation_item import recommendation_item
-
 #project imports
 from config import Config
+from recommendation_item import recommendation_item
 
 ##################################
 ## APP SETUP
@@ -62,7 +61,8 @@ def get_multi_items(itemids):
 
     return results
 
-
+def get_item(itemid):
+    return rP.hgetall('I'+itemid)
 
 
 
@@ -72,14 +72,17 @@ def get_multi_items(itemids):
 #index
 @app.route('/')
 def index():
-    return 'rpM Recommender :)'
+    return 'rpM Recommender v0.1'
 
 
+##################################
 #get item details
 #sample URL:  http://localhost:5000/getItem?item_id=1,2,3,5,6,99&callback=mycallback
 #simpler URL: http://localhost:5000/getItem?item_id=1,2,3,5,6,99
-@app.route('/getItem')
-def get_item():
+
+@app.route('/getItems')
+def get_items():
+
     #pull the string of ids from the querystring and turn it into an array
     itemid_string = request.args.get('item_id')
     itemArray = itemid_string.split(',')
@@ -88,11 +91,6 @@ def get_item():
 
     ## do callback stuff to make javascript clients happy fun time
     results = WrapCallbackString(items)
-    #results = []
-    #for i in items:
-        #print i
-
-    #return 'grumpy cat'
 
     resp = Response(response=results,
                     status=200,
@@ -102,13 +100,18 @@ def get_item():
 
     #return itemArray
 
-
+##################################
 #recommendation getters
+@app.route('/recommenderitems/<string:userid>/<int:itemid>/<int:numitems>/<string:mode>')
 @app.route('/recommenderitems/<string:userid>/<int:itemid>/<int:numitems>',defaults={'mode': 'simple'})
+
 def recommenderitems (userid, itemid, numitems,mode):
+
     retArray = []
+
     #we will retrieve twice the requested recommendations from each set
     numperset = numitems*2
+
     #get from redis, no pipeline, it's just two calls (for now)
     itemsim = get_item_sim(itemid, numperset)
     itembase = get_item_base(userid, numperset)
@@ -139,73 +142,14 @@ def recommenderitems (userid, itemid, numitems,mode):
             item.score = i[1] * factor
             retArray.append(item.__dict__)
 
-    for recommendation in retArray:
-        item_id_to_search = "I" + recommendation['item_id']
-        item_details = get_multi_items([item_id_to_search])
-        recommendation['item_description'] = item_details[0]['name']
-        recommendation['imdb'] = item_details[0]['imdb']
+    if mode == 'detail':
+        for recommendation in retArray:
+            item_details = get_item(recommendation['item_id'])
+            recommendation.update(item_details)
 
     newlist = sorted(retArray, key=lambda x: x['score'], reverse=True)[:numitems]
 
     results = WrapCallbackString(newlist)
-
-    resp = Response(response=results,
-                    status=200,
-                    mimetype="application/json")
-
-    return resp
-
-
-@app.route('/recommender/<string:userid>/<int:itemid>/<int:numitems>',defaults={'mode': 'full'})
-def recommender (userid, itemid, numitems,mode):
-
-    print mode
-    #we will retrieve twice the requested recommendations from each set
-    numperset = numitems*2
-
-    #get from redis, no pipeline, it's just two calls (for now)
-    itemsim = get_item_sim(itemid, numperset)
-    itembase = get_item_base(userid, numperset)
-
-    #get top scores so we can level the two datasets (item base is 1 to 5, item sim 0 to 1)
-
-    if itemsim and itembase:
-        topitemsim = itemsim[0][1]
-        topitembase = itembase[0][1]
-        factor = topitembase/topitemsim
-    else:
-        factor = 1
-
-    #next we'll spin these lists into a results dict, toping and adding scores
-    dictRes = dict()
-
-    for i in itembase:
-        dictRes[i[0]] = i[1]
-
-    for i in itemsim:
-        if i[0] in dictRes:
-            dictRes[i[0]] = dictRes[i[0]] + i[1]*factor
-        else:
-            dictRes[i[0]] = i[1]*factor
-
-    #find item attributes
-    if mode:  #== 'full':  #can't get optional param to work
-        for key in dictRes.keys():
-            print rP.hget('I'+key,'name')
-
-
-    #then we'll sort the dict and take the top results based on numitems
-    dictResS = OrderedDict(sorted(dictRes.items(), key=lambda t: t[1], reverse=True)[:numitems])
-
-
-    #return results
-    # great use case: http://127.0.0.1:5000/recommender/572/7/25
-    if cfg.g('debug','terminal') == '1':
-        print '----\norig item_base:' + str(itembase)
-        print '----\norig item_sim:' + str(itemsim)
-        print '----\ncombined result:' + str(dictResS)
-
-    results = WrapCallbackString(dictResS)
 
     resp = Response(response=results,
                     status=200,
