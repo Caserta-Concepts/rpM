@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html ng-app="rpmApp">
+<head>
+    <title></title>
+    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="bootstrap.css">
+    <script src="components/angular/angular.min.js"></script>
+    <script src="index-controller.js"></script>
+</head>
+<body ng-controller="IndexCtrl">
+<div class="container">
+    <div class="content-container-left">
+        <div class="row">
+            <div class="col-xs-3">
+                <label for="exampleInputName1">user id</label>
+                <input type="text" class="form-control"  ng-model="userid">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">
+                <label for="exampleInputEmail1">item id</label>
+                <input type="text" class="form-control" ng-model="itemid" ng-blur="lookupItem(itemid)">
+            </div>
+            <div class="col-xs-4">
+
+            </div>
+            <div class="col-xs-3">
+                <br />
+                <p class="text-success">{{item_description}}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">
+                <label for="exampleInputSubject1">num items</label>
+                <input type="text" class="form-control" ng-model="numitems">
+            </div>
+            <div class="col-xs-4">
+
+            </div>
+            <div class="col-xs-3">
+                <br />
+                <input type="checkbox" ng-model="showJSON"> Show data response
+            </div>
+        </div>
+
+        <div class="row">
+            <br />
+            <button type="submit" class="btn btn-default" ng-click="getRecommendations(userid, itemid, numitems)">Submit</button>
+
+        </div>
+
+        <div class="row" ng-show="hasData">
+            <br />
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <td><strong>item id</strong></td>
+                    <td><strong>score</strong></td>
+                    <td><strong>movie</strong></td>
+                </tr>
+                <tr ng-repeat="result in results">
+                    <td>{{result.item_id}}</td>
+                    <td>{{result.score}}</td>
+                    <td><a href="{{result.imdb}}" target="_blank">{{result.name}}</a></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="content-row" ng-show="showJSON">
+            data reponse to recommendation query
+            <ul>
+                <li ng-repeat="result in results">
+                    {{result.item_id}}
+                    :{{result.score}}
+                    :{{result.name}}
+                    :{{result.imdb}}
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>
