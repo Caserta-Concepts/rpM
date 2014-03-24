@@ -7,7 +7,6 @@ import json
 
 #project imports
 from config import Config
-from recommendation_item import recommendation_item
 
 ##################################
 ## APP SETUP
@@ -127,10 +126,10 @@ def recommenderitems (userid, itemid, numitems,mode):
         factor = 1
 
     for i in itembase:
-        item = recommendation_item();
-        item.item_id = i[0]
-        item.score = i[1]
-        retArray.append(item.__dict__)
+        item = dict()
+        item['item_id'] = i[0]
+        item['score'] = i[1]
+        retArray.append(item)
 
     for i in itemsim:
         this_itemid = i[0]
@@ -138,10 +137,10 @@ def recommenderitems (userid, itemid, numitems,mode):
         if len(found_item) > 0:
             found_item[0]['score'] = found_item[0]['score'] + i[1]*factor
         else:
-            item = recommendation_item();
-            item.item_id = i[0]
-            item.score = i[1] * factor
-            retArray.append(item.__dict__)
+            item = dict();
+            item['item_id'] = i[0]
+            item['score'] = i[1] * factor
+            retArray.append(item)
 
     if mode == 'detail':
         for recommendation in retArray:
