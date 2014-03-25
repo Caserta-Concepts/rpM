@@ -29,9 +29,9 @@ for line in records:
     #print line
     parsed_line = line.split('|')
     #print parsed_line[0]+ ' name ' + parsed_line[1]
-    pL.hset ('I'+str(parsed_line[0]),'name', parsed_line[1])
+    pL.hset ('I'+str(parsed_line[0]),'name', parsed_line[1].decode("ISO-8859-1"))
     pL.hset ('I'+str(parsed_line[0]),'release_date', parsed_line[2])
-    pL.hset ('I'+str(parsed_line[0]),'imdb', parsed_line[4])
+    pL.hset ('I'+str(parsed_line[0]),'imdb', parsed_line[4].decode("ISO-8859-1"))
 
 
 pL.execute()
