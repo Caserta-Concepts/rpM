@@ -18,6 +18,9 @@ app.debug = True
 
 #config
 cfg = Config()
+itemsim_bias = float(cfg.g('rpm','itemsim_bias'))
+itembase_bias = float(cfg.g('rpm','itembase_bias'))
+
 
 #redis connection
 rP = redis.StrictRedis(host = cfg.g('redis','host'), port = cfg.g('redis','port'), db = 0)
@@ -115,23 +118,20 @@ def recommenderitems (userid, itemid, numitems,mode):
     #get from redis, no pipeline, it's just two calls (for now)
     itemsim = get_item_sim(itemid, numperset)
     itembase = get_item_base(userid, numperset)
-    itemsim_bias = cfg.g('rpm','itemsim_bias')
-    itembase_bias = cfg.g('rpm','itembase_bias')
 
-    
     #get top scores so we can level the two datasets (item base is 1 to 5, item sim 0 to 1)
 
     if itemsim and itembase:
         topitemsim = itemsim[0][1]
         topitembase = itembase[0][1]
-        factor = topitembase/topitemsim #* itemsim_bias
+        factor = topitembase/topitemsim * itemsim_bias
     else:
         factor = 1
 
     for i in itembase:
         item = dict()
         item['item_id'] = i[0]
-        item['score'] = i[1] #* itembase_bias
+        item['score'] = i[1] * itembase_bias
         retArray.append(item)
 
     for i in itemsim:
