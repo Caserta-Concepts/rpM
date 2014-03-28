@@ -115,27 +115,29 @@ def recommenderitems (userid, itemid, numitems,mode):
     #get from redis, no pipeline, it's just two calls (for now)
     itemsim = get_item_sim(itemid, numperset)
     itembase = get_item_base(userid, numperset)
+    itemsim_bias = cfg.g('rpm','itemsim_bias')
+    itembase_bias = cfg.g('rpm','itembase_bias')
 
     #get top scores so we can level the two datasets (item base is 1 to 5, item sim 0 to 1)
 
     if itemsim and itembase:
         topitemsim = itemsim[0][1]
         topitembase = itembase[0][1]
-        factor = topitembase/topitemsim
+        factor = topitembase/topitemsim * itemsim_bias
     else:
         factor = 1
 
     for i in itembase:
         item = dict()
         item['item_id'] = i[0]
-        item['score'] = i[1]
+        item['score'] = i[1] * itembase_bias
         retArray.append(item)
 
     for i in itemsim:
         this_itemid = i[0]
         found_item = [x for x in retArray if x['item_id'] == this_itemid]
         if len(found_item) > 0:
-            found_item[0]['score'] = found_item[0]['score'] + i[1]*factor
+            found_item[0]['score'] = found_item[0]['score'] + i[1] * factor
         else:
             item = dict();
             item['item_id'] = i[0]

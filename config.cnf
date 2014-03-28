@@ -5,3 +5,7 @@ port=6379
 
 [debug]
 terminal=1
+
+[rpm]
+itembase_bias=1
+itemsim_bias=1.25
