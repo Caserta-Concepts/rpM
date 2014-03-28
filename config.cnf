@@ -7,5 +7,5 @@ port=6379
 terminal=1
 
 [rpm]
-itembase_bias=1
+itembase_bias=1.00
 itemsim_bias=1.25
