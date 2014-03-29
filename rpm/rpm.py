@@ -104,11 +104,11 @@ def get_items():
 
 ##################################
 #recommendation getters
-@app.route('/recommenderitems/<string:userid>/<int:itemid>/<int:numitems>/<string:mode>')
-@app.route('/recommenderitems/<string:userid>/<int:itemid>/<int:numitems>',defaults={'mode': 'simple'})
+@app.route('/recommenderitems/<string:userid>/<string:itemid>/<int:numitems>/<string:mode>')
+@app.route('/recommenderitems/<string:userid>/<string:itemid>/<int:numitems>',defaults={'mode': 'simple'})
 #http://127.0.0.1:5000/recommenderitems/572/7/50/detail or http://127.0.0.1:5000/recommenderitems/572/7/50
 
-def recommenderitems (userid, itemid, numitems,mode):
+def recommenderitems (userid, itemid, numitems, mode):
 
     retArray = []
 
@@ -129,10 +129,11 @@ def recommenderitems (userid, itemid, numitems,mode):
         factor = 1
 
     for i in itembase:
-        item = dict()
-        item['item_id'] = i[0]
-        item['score'] = i[1] * itembase_bias
-        retArray.append(item)
+        if i[0] != itemid:  #suppress the item the user is viewing
+            item = dict()
+            item['item_id'] = i[0]
+            item['score'] = i[1] * itembase_bias
+            retArray.append(item)
 
     for i in itemsim:
         this_itemid = i[0]

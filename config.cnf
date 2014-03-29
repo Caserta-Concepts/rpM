@@ -8,4 +8,4 @@ terminal=1
 
 [rpm]
 itembase_bias=1.00
-itemsim_bias=1.25
+itemsim_bias=1.00

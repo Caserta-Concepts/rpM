@@ -3,6 +3,7 @@
 #remove files
 hadoop fs -rmr /user/movie_lens_rec_item_similarity 
 hadoop fs -rmr /app/hadoop/tmp/recommenditemsimilarity
+
 #run hadoop
 /usr/local/hadoop/mahout/bin/mahout itemsimilarity \
   --input /user/movie_lens_data \
