@@ -1,7 +1,10 @@
-rpM
+ATTENTION BIG DATA TECHCON REGISTRANTS:
+===
+WE ACCIDENTALLY LEFT THE VMX OUT OF THE VM ARCHIVE.  IF YOU ARE USING VMPLAYER YOU WILL HAVE ISSUES FOLLOWING THE QUICKSTART.  WE HAVE ADDED A VMX FILE FOUND UNDER THE RESOURCES FOLDER OF THIS REPOSITORY.   SIMPLY PLACE UNDER SAME FOLDER AS THE VMDK AND YOU WILL BE ABLE TO ADD THE VM.
 ===
 
-#Redis-Python-Mahout Big Data Recommender
+rpM - Redis-Python-Mahout Big Data Recommender
+===
 This project is meant to be a DIY toolkit for experimenting with a mahout based recommendation engine. Future plans include making a full fledged application.  This is a work in progress but components should work if you follow the instructions carefully!
 
 ##Main Components:
