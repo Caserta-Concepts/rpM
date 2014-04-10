@@ -29,13 +29,14 @@ The following message will appear: ```Running on http://127.0.0.1:5000/```
 In the future we will be making rpM auto-provision EMR and completely automate the workflow, but for now you have two options:
 
 ####Option 1  - Use our VM  -->  EASY WAY!
+Note: if you are going to use a instance of Redis outside the VM edit the host settings in 7, 8, and 9.
+
 1. Download the VM from  http://www.casertaconcepts.com/resources and follow the Quickstart instructions.
 2. Clone the latest version of rpM to the  /home/hduser folder within the VM.
 3. Run ```pig ~/rpM/sample_etl/movie_lens_data_to_mahout.pig``` to populate data folders used by itemsimilarity and itembased
 4. Run ```pig ~/rpM/sample_etl/movie_lens_user_to_mahout.pig``` to populate user folders used by itembased
 5. Run ```./rpM/mahout_cmds/itemsimilarity.sh``` to run itemsimilarity
 6. Run ```./rpM/mahout_cmds/itembased.sh``` to run itembased recommender
-Note: if you are going to use a instance of redis outside the VM, edit the host settings in these three steps
 7. Run ```pig ~/rpM/sample_etl/mahout_item_sim_to_redis.pig```  to populate redis with itemsimilarity zsets
 8. Run ```pig ~/rpM/sample_etl/mahout_item_base_to_redis.pig```  to populate redis with itembased zsets
 9. If using the sample_ui, run the following to import item info: 
